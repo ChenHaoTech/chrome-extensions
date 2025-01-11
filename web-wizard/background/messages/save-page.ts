@@ -3,10 +3,12 @@ import type { PlasmoMessaging } from "@plasmohq/messaging"
 export type SavePageRequest = {
   title: string
   url: string
+  description?: string
+  type: "mdn" | "github"
 }
 
 const handler: PlasmoMessaging.MessageHandler<SavePageRequest> = async (req, res) => {
-  const { title, url } = req.body
+  const { title, url, description, type } = req.body
   
   try {
     const data = await chrome.storage.local.get("savedPages")
@@ -15,7 +17,9 @@ const handler: PlasmoMessaging.MessageHandler<SavePageRequest> = async (req, res
     await chrome.storage.local.set({
       savedPages: [...savedPages, { 
         title, 
-        url, 
+        url,
+        description,
+        type,
         date: new Date().toISOString() 
       }]
     })

@@ -34,7 +34,8 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*"
+      "https://developer.mozilla.org/*",
+      "https://github.com/*"
     ],
     "permissions": [
       "storage",
