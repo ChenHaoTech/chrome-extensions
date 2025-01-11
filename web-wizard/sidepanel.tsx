@@ -1,15 +1,27 @@
 import { useEffect, useState } from "react"
+import { sendToBackground } from "@plasmohq/messaging"
 
 function IndexSidePanel() {
   const [savedPages, setSavedPages] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Load saved pages when component mounts
-    chrome.storage.local.get("savedPages", (data) => {
-      setSavedPages(data.savedPages || [])
-    })
+    const loadSavedPages = async () => {
+      try {
+        const pages = await sendToBackground({
+          name: "get-saved-pages"
+        })
+        setSavedPages(pages)
+      } catch (error) {
+        console.error("Failed to load saved pages:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    // Listen for changes to storage
+    loadSavedPages()
+
+    // Listen for storage changes
     chrome.storage.onChanged.addListener((changes) => {
       if (changes.savedPages) {
         setSavedPages(changes.savedPages.newValue)
@@ -17,10 +29,18 @@ function IndexSidePanel() {
     })
   }, [])
 
+  if (loading) {
+    return (
+      <div style={{ padding: 16, textAlign: "center" }}>
+        Loading...
+      </div>
+    )
+  }
+
   return (
     <div
       style={{
-        display: "flex", 
+        display: "flex",
         flexDirection: "column",
         padding: 16,
         height: "100vh",

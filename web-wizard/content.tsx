@@ -1,5 +1,6 @@
 import type { PlasmoContentScript } from "plasmo"
 import { useEffect } from "react"
+import { sendToBackground } from "@plasmohq/messaging"
 
 export const config: PlasmoContentScript = {
     matches: ["https://developer.mozilla.org/*"]
@@ -24,16 +25,33 @@ const ContentScript = () => {
       z-index: 10000;
     `
 
-        fab.addEventListener("click", () => {
+        fab.addEventListener("click", async () => {
             const title = document.title
             const url = window.location.href
-            console.log(title, url)
-            chrome.storage.local.get("savedPages", (data) => {
-                const savedPages = data.savedPages || []
-                chrome.storage.local.set({
-                    savedPages: [...savedPages, { title, url, date: new Date().toISOString() }]
+            
+            try {
+                const response = await sendToBackground({
+                    name: "save-page",
+                    body: {
+                        title,
+                        url
+                    }
                 })
-            })
+                
+                if (response.success) {
+                    fab.innerHTML = "Page Saved!"
+                    setTimeout(() => {
+                        fab.innerHTML = "Save Page"
+                    }, 2000)
+                } else {
+                    fab.innerHTML = "Error!"
+                    setTimeout(() => {
+                        fab.innerHTML = "Save Page"
+                    }, 2000)
+                }
+            } catch (error) {
+                console.error("Failed to save page:", error)
+            }
         })
 
         document.body.appendChild(fab)
