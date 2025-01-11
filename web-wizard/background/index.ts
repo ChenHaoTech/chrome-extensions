@@ -1,4 +1,5 @@
 import "@plasmohq/messaging/background"
+
 import ErrorHandler from "~utils/error-handler"
 
 // 初始化错误处理器
@@ -13,12 +14,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       message.context || sender.tab?.url || "Unknown Context"
     )
   }
-})
 
-// Handle runtime.lastError instead of non-existent onMessageError
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // Handle runtime.lastError
   if (chrome.runtime.lastError) {
-    const error = new Error(chrome.runtime.lastError.message || "Unknown runtime error")
+    const error = new Error(
+      chrome.runtime.lastError.message || "Unknown runtime error"
+    )
     ErrorHandler.handleError(error, "error", "Runtime Error")
   }
 })
