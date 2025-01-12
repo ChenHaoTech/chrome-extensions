@@ -52,8 +52,8 @@
           "<all_urls>"
         ],
         "resources": [
-          "sidepanel.html",
-          "popup.html", 
+          "sdkjsld/sidepanel.html",
+          "opyions/popup.html", 
           "options.html",
           "pages/error.html"
         ]
