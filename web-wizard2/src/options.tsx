@@ -1,22 +1,60 @@
-import { useState } from "react"
+import {
+  Box,
+  Card,
+  CardContent,
+  FormControlLabel,
+  Switch,
+  Typography
+} from "@mui/material"
+import { useStorage } from "@plasmohq/storage/hook"
+
+import "~styles/globals.css"
 
 function IndexOptions() {
-  const [data, setData] = useState("")
+  const [darkMode, setDarkMode] = useStorage("darkMode", false)
+  const [autoSearch, setAutoSearch] = useStorage("autoSearch", true)
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        padding: 16
-      }}>
-      <h1>
-        Welcome to your <a href="https://www.plasmo.com">Plasmo</a> Extension!
-      </h1>
-      <input onChange={(e) => setData(e.target.value)} value={data} />
-      <footer>Crafted by @PlasmoHQ</footer>{" "}
-    </div>
+    <Box sx={{ p: 3, maxWidth: 600, mx: "auto" }}>
+      <Typography variant="h4" gutterBottom>
+        Settings
+      </Typography>
+
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Appearance
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={darkMode}
+                onChange={(e) => setDarkMode(e.target.checked)}
+              />
+            }
+            label="Dark Mode"
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Search Behavior
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={autoSearch}
+                onChange={(e) => setAutoSearch(e.target.checked)}
+              />
+            }
+            label="Auto-search on Enter"
+          />
+        </CardContent>
+      </Card>
+    </Box>
   )
 }
 
-export default IndexOptions
+export default IndexOptions 
